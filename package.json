@@ -1,0 +1,14 @@
+{
+  "name": "compile-scripts",
+  "version": "1.0.0",
+  "description": "Compile scripts with various tools",
+  "scripts": {
+    "minify": "node minify.js"
+  },
+  "dependencies": {
+    "clean-css": "^5.3.2",
+    "glob-all": "^3.3.1",
+    "node-sass": "^9.0.0",
+    "terser": "^5.19.2"
+  }
+}

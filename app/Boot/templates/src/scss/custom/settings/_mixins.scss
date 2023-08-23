@@ -1,0 +1,72 @@
+$colors: (
+	blue: $blue,
+	sky-blue: $sky-blue,
+	red: $red,
+);
+
+@mixin color-modifiers-bg {
+
+	@each $name,
+	$hex in $colors {
+		&-#{"#{$name}"} {
+			background-color: $hex !important;
+		}
+	}
+}
+
+@mixin color-modifiers-text {
+
+	@each $name,
+	$hex in $colors {
+		&-#{"#{$name}"} {
+			color: $hex !important;
+		}
+	}
+}
+
+@mixin color-modifiers-box-wave-shadow {
+
+	@each $name,
+	$hex in $colors {
+		&-#{"#{$name}"} {
+			box-shadow: 0.5rem 0.5rem 0 $hex !important;
+		}
+	}
+}
+
+@mixin color-modifiers-btn {
+	@each $name,
+	$hex in $colors {
+		&-#{"#{$name}"} {
+			background-color: $hex !important;
+
+			&:hover {
+				background-color: darken($hex, 10%) !important;
+			}
+		}
+	}
+}
+
+@mixin optional-at-root($sel) {
+	@at-root #{if(not &, $sel, selector-append(&, $sel))} {
+		@content;
+	}
+}
+
+@mixin placeholder {
+	@include optional-at-root("::-webkit-input-placeholder") {
+		@content;
+	}
+
+	@include optional-at-root(":-moz-placeholder") {
+		@content;
+	}
+
+	@include optional-at-root("::-moz-placeholder") {
+		@content;
+	}
+
+	@include optional-at-root(":-ms-input-placeholder") {
+		@content;
+	}
+}
