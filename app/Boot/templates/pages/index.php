@@ -3,6 +3,8 @@
     echo $this->insert("{{theme}}::partials/header");
 ?>
 
-<main id="homepage">
+<!--{{theme}}page-->
+<section id="{{theme}}page">
 
-</main>
+</section>
+<!--{{theme}}page-->

@@ -1,5 +1,5 @@
 <?php
-header('Set-Cookie: Universidade5asec=true; SameSite=None;Secure');
+header('Set-Cookie: Wizard=true; SameSite=None;Secure');
 header("Cache-Control: private, max-age=10800, pre-check=10800");
 header("Pragma: private");
 header("Expires: " . date(DATE_RFC822, strtotime("30 day")));

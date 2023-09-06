@@ -3,6 +3,8 @@
     echo $this->insert("web::partials/header");
 ?>
 
-<main id="homepage">
-   
-</main>
+<!--webhome-->
+<section id="webhome">
+    <h1>webhome</h1>
+</section>
+<!--webhome-->

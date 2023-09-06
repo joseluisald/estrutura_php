@@ -38,33 +38,9 @@ abstract class Controller extends Session
 	 */
 	protected mixed $http;
 	/**
-	 * @var mixed|\Source\Core\Input
+	 * @var mixed|\App\Supports\Input
 	 */
 	protected mixed $input;
-	/**
-	 * @var string
-	 */
-	protected string $user_token;
-	/**
-	 * @var Me
-	 */
-	protected mixed $me;
-	/**
-	 * @var Modules
-	 */
-	protected mixed $modules;
-    /**
-     * @var mixed|string
-     */
-    protected mixed $module;
-    /**
-     * @var mixed|Authentication
-     */
-    protected mixed $authentication;
-    /**
-     * @var mixed|array
-     */
-    protected mixed $user_access_params;
     /**
      * @var mixed|Seo
      */
@@ -89,14 +65,6 @@ abstract class Controller extends Session
 
         $this->router = $router;
 
-        $this->authentication = new Authentication($router);
-
-        $this->module = $this->getCurrentModule();
-        $this->me = $this->authentication->getMe();
-        $this->modules = $this->authentication->getModules();
-        $this->user_access_params = $this->authentication->getUserAccessParams();
-
-
         $this->view = new Engine(dirname(__DIR__, 1) . "/View");
         $this->renderOptions = [];
         $this->view->addData([
@@ -105,7 +73,9 @@ abstract class Controller extends Session
 			"siteUrl" => site("root"),
 			"siteDescription" => site("description"),
 			"imageSharer" => asset("web", site("imageSharer")),
-            "seo" => $this->seo->render()
+            "seo" => $this->seo->render(),
+            "gtmHead" => SITE["gtmHead"],
+            "gtmBody" => SITE["gtmBody"]
 		]);
 
         $themesDir = dirname(__DIR__, 1) . "/View/";
@@ -155,16 +125,5 @@ abstract class Controller extends Session
 		$renderOptions = array_merge($options, ["renderOptions" => $options]);
 
 		return $renderOptions;
-	}
-
-    /**
-     * @return string
-     */
-    private function getCurrentModule(): string
-	{
-		$currentRoute = $this->router->current();
-		$moduleName = explode(".", $currentRoute->name)[0];
-
-		return ($moduleName == "web") ? "/" : "/" . $moduleName;
 	}
 }

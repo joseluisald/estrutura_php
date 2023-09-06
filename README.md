@@ -26,8 +26,4 @@ O comando acima faz o mesmo que o anterior, porém especifica o tema a ser utili
     composer build
 </pre>
 
-<pre>
-    npm run minify
-</pre>
-
-Comandos para fazer a minificação e compilação de todas os css e js do site para a pasta assets
+Comando para fazer a minificação e compilação de todas os css e js do site para a pasta assets

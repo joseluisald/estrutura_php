@@ -1,8 +1,14 @@
 <?php
 
+require dirname(__DIR__, 2) . "\\vendor\\autoload.php";
+
 use \ScssPhp\ScssPhp\Compiler;
 use \ScssPhp\ScssPhp\OutputStyle;
 
+/**
+ * @return void
+ * @throws \ScssPhp\ScssPhp\Exception\SassException
+ */
 function compileThemesCss()
 {
 	$themesDir = dirname(__DIR__, 2) . "/src/";
@@ -16,6 +22,7 @@ function compileThemesCss()
 
 		$compiler->setOutputStyle(OutputStyle::COMPRESSED);
 		$compiler->setSourceMap(Compiler::SOURCE_MAP_FILE);
+
 
 		$compiler->setSourceMapOptions([
 			"sourceMapURL" => $mapsDir . $theme . ".map",
@@ -43,6 +50,9 @@ function compileThemesCss()
 	}
 }
 
+/**
+ * @return void
+ */
 function compileCoreCss()
 {
 	$themesDir = dirname(__DIR__, 2) . "/src/";
@@ -52,6 +62,7 @@ function compileCoreCss()
 	$cssPluginFolder = $themesDir . $theme . "/css";
 
 	$cssPluginFiles = glob($cssPluginFolder . "/*/*.css");
+
 	$cssPlugin = "";
 
 	foreach ($cssPluginFiles as $file) {
@@ -66,6 +77,9 @@ function compileCoreCss()
 	$cssPluginMinifier->minify($assetsFolder . "/css/{$theme}.min.css");
 }
 
+/**
+ * @return void
+ */
 function compileThemesJs()
 {
 	$themesDir = dirname(__DIR__, 2) . "/src/";
@@ -76,6 +90,7 @@ function compileThemesJs()
 		$jsPluginFolder = $themesDir . $theme . "/js";
 
 		$jsPluginFiles = glob($jsPluginFolder . "/*/*.js");
+
 		$jqueryPath = $jsPluginFolder . "/jquery/jquery.min.js";
 		$momentPath = $jsPluginFolder . "/moment/moment.min.js";
 
@@ -96,11 +111,12 @@ function compileThemesJs()
 	}
 }
 
+/**
+ * @return void
+ * @throws \ScssPhp\ScssPhp\Exception\SassException
+ */
 (function () {
-    echo '...compileThemesCss';
 	compileThemesCss();
-    echo '...compileCoreCss';
 	compileCoreCss();
-    echo '...compileThemesJs';
 	compileThemesJs();
 })();

@@ -10,7 +10,12 @@
 
     <meta name="color-scheme" content="light dark">
 
-    <?=$seo;?>
+    <!--START SEO-->
+        <?=$seo;?>
+    <!--END SEO-->
+    <!--START GTMHEAD-->
+        <?=$gtmHead;?>
+    <!--END GTMHEAD-->
 
     <link rel="stylesheet" href="<?= asset("common", "css/common.min.css"); ?>" />
 	<link rel="stylesheet" href="<?= asset($theme, "css/{$theme}.min.css"); ?>" />

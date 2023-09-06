@@ -36,6 +36,6 @@ class AuthenticationMiddleware
      */
     public function handle(Router $router): bool
 	{
-        return true;
+		return true;
 	}
 }

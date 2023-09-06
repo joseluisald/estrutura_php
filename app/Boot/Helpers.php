@@ -14,6 +14,33 @@ function site(string $param = null): string
 	return SITE["root"];
 }
 
+/**
+ * @param Int $id
+ * @param String $image
+ * @return string|null
+ */
+function ucImage(Int $id, ?String $image): ?string
+{
+    if(empty($image) || is_null($image)) return null;
+
+    return api() . "/images/res/courses/$id/$image";
+}
+
+/**
+ * @param $duration
+ * @return string
+ */
+function formatChapterDuration($duration)
+{
+    $durationMoment = DateTime::createFromFormat('H:i:s', $duration);
+    $durationHours = $durationMoment->format('H');
+
+    if ($durationHours > 0) {
+        return $durationMoment->format('H:i') . ' horas';
+    } else {
+        return $durationMoment->format('i') . ' minutos';
+    }
+}
 
 /**
  * @return array
@@ -104,7 +131,7 @@ function asset(string $theme, string $path, bool $time = true, bool $returnPath 
  * @param bool $dump
  * @return void
  */
-function debug($data, bool $dump = false): void
+function debug($data, bool $dump = false, bool $die = true): void
 {
 	echo "<pre>";
 
@@ -114,7 +141,8 @@ function debug($data, bool $dump = false): void
 		print_r($data);
 
 	echo "</pre>";
-	die();
+    echo "<hr>";
+    if($die) die();
 }
 
 /**
@@ -188,4 +216,172 @@ function brandCsreditCard($number)
 	}
 
 	return $brand;
+}
+
+/**
+ * @param $addressObject
+ * @param $linebreak
+ * @param $tag
+ * @return string
+ */
+function printAddress($addressObject, $linebreak = "-", $tag = "span")
+{
+	$street = (!empty($addressObject->Street)) ? $addressObject->Street : "";
+	$number = (!empty($addressObject->Number)) ? $addressObject->Number : "s/n";
+	$neighborhood = (!empty($addressObject->Neighborhood)) ? $addressObject->Neighborhood : "";
+	$complement = (!empty($addressObject->Complement)) ? $addressObject->Complement : "";
+	$zipCode = (!empty($addressObject->ZipCode)) ? "CEP: " . mask($addressObject->ZipCode, "#####-###") : "";
+
+	if (is_object(@$addressObject->City)) {
+		$city = $addressObject->City->Name;
+		$state = mb_strtoupper($addressObject->City->State->Code);
+	} else {
+		$city = (!empty($addressObject->City)) ? $addressObject->City : "";
+		$state = (!empty($addressObject->State)) ? $addressObject->State : "";
+	}
+
+	$address = "<{$tag}>{$street}, {$number}</{$tag}> - <{$tag}>{$neighborhood}</{$tag}> - <{$tag}>{$city} / {$state} </{$tag}> {$linebreak} <{$tag}>{$zipCode}</{$tag}>";
+
+
+	return $address;
+	// return mb_convert_case($address, MB_CASE_TITLE, 'UTF-8');
+}
+
+/**
+ * @param $val
+ * @param $mask
+ * @return string
+ */
+function mask($val, $mask)
+{
+	$maskared = '';
+	$k = 0;
+	for ($i = 0; $i <= strlen($mask) - 1; $i++) {
+		if ($mask[$i] == '#') {
+			if (isset($val[$k]))
+				$maskared .= $val[$k++];
+		} else {
+			if (isset($mask[$i]))
+				$maskared .= $mask[$i];
+		}
+	}
+	return $maskared;
+}
+
+/**
+ * @param $file
+ * @return false|string
+ */
+function getFileContent($file)
+{
+	return file_get_contents($file);
+}
+
+/**
+ * @param $attachment
+ * @param $theme
+ * @return string
+ */
+function getFileIcon($attachment, $theme)
+{
+	$fileExtension = 'generic.png';
+	$attachmentExtension = pathinfo($attachment, PATHINFO_EXTENSION);
+
+	$assetDir = SITE["root"] . "/assets/{$theme}/images/file-icons/";
+	$fileIconsDir = dirname(__DIR__, 2) . "/assets/{$theme}/images/file-icons/";
+	$availableExtensions = [];
+
+	$files = glob($fileIconsDir . '*.{png,jpg,jpeg,svg}', GLOB_BRACE);
+	foreach ($files as $file) {
+		$extension = pathinfo($file, PATHINFO_FILENAME);
+		$availableExtensions[] = $extension;
+	}
+
+	if (in_array(trim($attachmentExtension), $availableExtensions)) {
+		$fileExtension = $attachmentExtension . '.png';
+	}
+
+	$iconPath = $assetDir . $fileExtension;
+
+	return $iconPath;
+}
+
+/**
+ * @param $data
+ * @return string
+ * @throws Exception
+ */
+function dateConclusionCourse($data, $extenso = false)
+{
+    $dateTime = new DateTime($data);
+
+    $dia = $dateTime->format('d');
+    $mes = $dateTime->format('M');
+    $ano = $dateTime->format('Y');
+
+    if ($extenso) {
+        $strMoth = array(
+            'jan' => 'janeiro',
+            'feb' => 'fevereiro',
+            'mar' => 'março',
+            'apr' => 'abril',
+            'may' => 'maio',
+            'jun' => 'junho',
+            'jul' => 'julho',
+            'aug' => 'agosto',
+            'sep' => 'setembro',
+            'oct' => 'outubro',
+            'nov' => 'novembro',
+            'dec' => 'dezembro'
+        );
+    } else {
+        $strMoth = array(
+            'jan' => 'jan',
+            'feb' => 'fev',
+            'mar' => 'mar',
+            'apr' => 'abr',
+            'may' => 'mai',
+            'jun' => 'jun',
+            'jul' => 'jul',
+            'aug' => 'ago',
+            'sep' => 'set',
+            'oct' => 'out',
+            'nov' => 'nov',
+            'dec' => 'dez'
+        );
+    }
+
+    if (array_key_exists(strtolower($mes), $strMoth)) {
+        $mes = $strMoth[strtolower($mes)];
+    }
+    return ['dia' => $dia, 'mes' => $mes, 'ano' => $ano];
+}
+
+/**
+ * @param string $Url
+ * @return bool|void
+ */
+function verifyModule(string $url)
+{
+    if ($_SESSION['modules'] && !empty($_SESSION['modules']) !== null) {
+        $modules = $_SESSION['modules'];
+
+        foreach ($modules as $module) {
+            if (isset($module->Url) && $module->Url === $url && $module->Visible) {
+                return true;
+            }
+        }
+    } else {
+        header('Location:' . site() . "/ops/405");
+    }
+}
+
+/**
+ * @param $chapterProgress
+ * @param $chapter
+ * @return bool
+ */
+function showChapterQuiz($chapterProgress, $chapter)
+{
+    return !empty($chapterProgress) && $chapterProgress->IsFinished && $chapter->HasQuiz;
 }

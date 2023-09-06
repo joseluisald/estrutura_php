@@ -3,21 +3,21 @@
 namespace App\Controllers;
 
 use App\Core\Controller;
-use App\Services\{{name}}Service;
+use App\Services\AdminService;
 
 /**
- * class {{name}}
+ * class Admin
  */
-class {{name}} extends Controller
+class Admin extends Controller
 {
     /**
      * @var string
      */
     protected $theme;
     /**
-     * @var {{name}}Service
+     * @var AdminService
      */
-    protected ${{nameLc}}Service;
+    protected $adminService;
 
     /**
      * @param $router
@@ -26,9 +26,9 @@ class {{name}} extends Controller
     {
         parent::__construct($router);
 
-        $this->{{nameLc}}Service = new {{name}}Service();
+        $this->adminService = new AdminService();
 
-        $this->theme = "{{theme}}";
+        $this->theme = "admin";
         $this->renderOptions = array_merge($this->renderOptions, [
             "theme" => $this->theme
         ]);

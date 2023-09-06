@@ -27,7 +27,7 @@ class Seo
      * @param $desc
      * @param $url
      * @param $image
-     * @return void
+     * @return string
      */
     public function render($title = "", $desc = "", $url = "", $image = "")
     {
