@@ -63,6 +63,22 @@ class ComposerCommands
         file_put_contents($baseDir . '/pages/index.php', $indexTemplateContent);
         //  GERAÇÃO DOS ARQUIVOS DE VIEW
 
+        //  GERAÇÃO DAS PASTAS DE ASSETS
+        $assetsDir = __DIR__ . '/../../assets/'. $themeName.'/';
+        $dirsAssetToCreate = [
+            $assetsDir,
+            $assetsDir . '/js',
+            $assetsDir . '/images',
+            $assetsDir . '/css',
+        ];
+
+        foreach ($dirsAssetToCreate as $dir) {
+            if (!file_exists($dir)) {
+                mkdir($dir, 0755, true);
+            }
+        }
+        //  GERAÇÃO DAS PASTAS DE ASSETS
+
         echo "Tema '$themeName' criado com sucesso!\n";
     }
 
