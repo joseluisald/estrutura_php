@@ -39,6 +39,7 @@ class {{name}} extends Controller
      */
     public function index()
     {
-        echo $this->view->addData($this->renderOptions)->render("$this->theme::pages/index");
+        $html = $this->view->addData($this->renderOptions)->render("$this->theme::pages/index");
+        echo $this->htmlMin->minify($html);
     }
 }
