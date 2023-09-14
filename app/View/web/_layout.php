@@ -13,6 +13,9 @@
         <!--START GTMBODY-->
             <?=$gtmBody;?>
         <!--END GTMBODY-->
+        <!--START LOADER-->
+            <?= $this->insert("web::partials/loader"); ?>
+        <!--END LOADER-->
         <!--START CONTENT-->
             <?= $this->section("content"); ?>
         <!--END CONTENT-->

@@ -9,10 +9,9 @@ if (session_status() !== PHP_SESSION_ACTIVE) {
     session_start();
 }
 
-ini_set('display_errors', 1);
-error_reporting(E_ALL);
-
 require __DIR__ . "/vendor/autoload.php";
+
+set_error_handler("errorsHandler");
 
 use CoffeeCode\Router\Router;
 use Monolog\Handler\StreamHandler;

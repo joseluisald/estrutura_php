@@ -1,0 +1,55 @@
+:root {
+    --fsphp: #1F2026;
+    --fsline: #475163;
+    --fsgreen: #35ba9b;
+    --fsblue: #3aadd9;
+    --fsyellow: #f5b945;
+    --fsred: #d94452;
+}
+
+.trigger {
+    font-size: 1rem;
+    padding: 15px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+    margin: 20px 0;
+    font-weight: bold;
+    border: 1px solid #cccccc;
+}
+
+.trigger small {
+    display: block;
+    margin-top: 7px;
+    font-size: 0.75em;
+}
+
+.trigger.accept {
+    color: var(--fsgreen);
+    border-color: var(--fsgreen);
+}
+
+.trigger.warning {
+    color: var(--fsyellow);
+    border-color: var(--fsyellow);
+}
+
+.trigger.error {
+    color: var(--fsred);
+    border-color: var(--fsred);
+}
+
+.xdebug-var-dump {
+    overflow: auto;
+    background: rgba(0, 0, 0, 0.05);
+    margin: 20px 0;
+    padding: 20px;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+
+.xdebug-var-dump * {
+    font-size: 0.8rem;
+    margin: 0;
+}

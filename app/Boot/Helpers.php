@@ -118,12 +118,25 @@ function asset(string $theme, string $path, bool $time = true, bool $returnPath 
 {
 	$file = SITE["root"] . "/assets/{$theme}/{$path}";
 	$fileOnDir = dirname(__DIR__, 2) . "/assets/{$theme}/{$path}";
-	if ($time && file_exists($fileOnDir)) {
+	if ($time && file_exists($fileOnDir) && $_SERVER['SERVER_NAME'] != SITE_PROD) {
 		$file .= "?time=" . filemtime($fileOnDir);
 	}
 
 	return ($returnPath == true) ? $fileOnDir : $file;
 	// return $file;
+}
+
+/**
+ * @param $error
+ * @param $message
+ * @param $file
+ * @param $line
+ * @return void
+ */
+function errorsHandler($error, $message, $file, $line)
+{
+    $color = ($error == E_USER_ERROR ? "fsred" : "fsyellow");
+    echo "<div class='trigger' style='border-color: var(--{$color}); color:var(--{$color});'>[ Linha {$line} ] {$message} <small>{$file}</small></div>";
 }
 
 /**

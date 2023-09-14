@@ -2,25 +2,28 @@
 <html>
     <head>
         <!--START HEAD-->
-            <?= $this->insert('web::partials/head') ?>
+            <?= $this->insert('{{theme}}::partials/head') ?>
         <!--END HEAD-->
         <!--START CONSTANTS-->
-            <?= $this->insert('web::partials/constants') ?>
+            <?= $this->insert('{{theme}}::partials/constants') ?>
         <!--END CONSTANTS-->
     </head>
     <body>
-    <div class="loading"></div>
+        <div class="loading"></div>
         <!--START GTMBODY-->
             <?=$gtmBody;?>
         <!--END GTMBODY-->
+        <!--START LOADER-->
+            <?= $this->insert("admin::partials/loader"); ?>
+        <!--END LOADER-->
         <!--START CONTENT-->
             <?= $this->section("content"); ?>
         <!--END CONTENT-->
         <!--START FOOTER-->
-            <?= $this->insert('web::partials/footer') ?>
+            <?= $this->insert('{{theme}}::partials/footer') ?>
         <!--END FOOTER-->
         <!--START SCRIPTS-->
-            <?= $this->insert('web::partials/scripts') ?>
+            <?= $this->insert('{{theme}}::partials/scripts') ?>
         <!--END SCRIPTS-->
         <!--START SCRIPTS SECTION-->
             <?= $this->section("scripts"); ?>

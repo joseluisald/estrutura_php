@@ -23,19 +23,29 @@ jQuery.event.special.mousewheel = {
 
 /**
  * ajaxLoad
- *
  * @var action
  */
-const ajaxLoad = (action) => 
+const ajaxLoad = (action) =>
 {
-    let ajax_load_div = $(".loading");
-
     if (action === "open") {
-        ajax_load_div.fadeIn(200).css("display", "flex");
+        $(".contLoader").removeClass('off');
     }
-
     if (action === "close") {
-        ajax_load_div.fadeOut(200);
+        $(".contLoader").addClass('off');
+    }
+};
+
+/**
+ * boxLoad
+ * @var action
+ */
+const boxLoad = (action) =>
+{
+    if (action === "open") {
+        $(".boxLoader").addClass('ON');
+    }
+    if (action === "close") {
+        $(".boxLoader").removeClass('ON');
     }
 };
 
@@ -57,7 +67,7 @@ const dd = (param) =>
  */
 const setSession = (param, values) =>
 {
-	localStorage.setItem(param, JSON.stringify(values));
+    localStorage.setItem(param, JSON.stringify(values));
 };
 
 /**
@@ -67,10 +77,10 @@ const setSession = (param, values) =>
  */
 const getSession = (param) => 
 {
-	if(localStorage.getItem(param))
-		return localStorage.getItem(param);
-	else
-		return false;
+    if(localStorage.getItem(param))
+        return localStorage.getItem(param);
+    else
+        return false;
 };
 
 /**
@@ -112,6 +122,17 @@ const cPage = _ =>
 };
 
 /**
+ * cUrl
+ */
+const cUrl = param =>
+{
+    if(!isEmpty(param)) {
+        return `${siteUrl}/${param}`;
+    }
+    return `${siteUrl}`;
+}
+
+/**
  * redirect
  *
  * @var page
@@ -122,4 +143,60 @@ const redirect = page =>
     return;
 };
 
+/**
+ * isEmpty
+ * @var value
+ */
+const isEmpty = (value) =>
+{
+    return value === null || value === [] || value === undefined || value === "" || Object.values(value).length === 0 || value.length === 0;
+}
+
+/**
+ * dateBrToUs
+ * @var data
+ */
+function dateBrToUs(data)
+{
+    const parts = data.split('/');
+
+    if (parts.length !== 3) {
+        return "Formato de data inválido. Use dd/mm/yyyy.";
+    }
+
+    const day = parts[0];
+    const month = parts[1];
+    const year = parts[2];
+
+    if (isNaN(day) || isNaN(month) || isNaN(year)) {
+        return "Os elementos de dia, mês e ano devem ser números.";
+    }
+
+    return `${year}-${month.padStart(2, '0')}-${day.padStart(2, '0')}`;
+}
+
+/**
+ * dateUsToBr
+ * @var data
+ */
+function dateUsToBr(data)
+{
+    const parts = data.split('-');
+
+    if (parts.length !== 3) {
+        return "Formato de data inválido. Use yyyy-mm-dd.";
+    }
+
+    const day = parts[2];
+    const month = parts[1];
+    const year = parts[0];
+
+    if (isNaN(day) || isNaN(month) || isNaN(year)) {
+        return "Os elementos de dia, mês e ano devem ser números.";
+    }
+
+    return `${day.padStart(2, '0')}\/${month.padStart(2, '0')}\/${year}`;
+}
+
 dd('Page: '+cPage());
+dd('Url: '+cUrl());

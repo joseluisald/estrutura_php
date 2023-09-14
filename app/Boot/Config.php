@@ -1,12 +1,12 @@
 <?php
 
-define("SITE_LOCAL", "universidade-local.5asec.com.br");
-define("SITE_HOMOLOG", "universidade-qa.5asec.com.br");
-define("SITE_PROD", "universidade.5asec.com.br");
+define("SITE_LOCAL", "www.estrutura-php.com.br");
+define("SITE_HOMOLOG", "");
+define("SITE_PROD", "");
 
-define("API_LOCAL", "universidade-qa.5asec.com.br/api");
-define("API_HOMOLOG", "universidade-qa.5asec.com.br/api");
-define("API_PROD", "universidade.5asec.com.br/api");
+define("API_LOCAL", "");
+define("API_HOMOLOG", "");
+define("API_PROD", "");
 
 $root = '';
 $url_API = '';
@@ -20,18 +20,27 @@ if ($_SERVER['SERVER_NAME'] == SITE_LOCAL) {
 	$logCurl = TRUE;
 	$showError = TRUE;
     require "Minify.php";
+
+    ini_set('display_errors', 1);
+    error_reporting(E_ALL);
 } elseif ($_SERVER['SERVER_NAME'] == SITE_HOMOLOG) {
 	$root = "https://" . SITE_HOMOLOG;
 	$url_API = "https://" . API_HOMOLOG;
 
 	$logCurl = TRUE;
 	$showError = TRUE;
+
+	ini_set('display_errors', 1);
+    error_reporting(E_ALL);
 } elseif ($_SERVER['SERVER_NAME'] == SITE_PROD) {
 	$root = "https://" . SITE_PROD;
 	$url_API = "https://" . API_PROD;
 
 	$logCurl = FALSE;
 	$showError = FALSE;
+
+	ini_set('display_errors', 0);
+    error_reporting(0);
 }
 
 define("SITE", [
@@ -40,7 +49,7 @@ define("SITE", [
 	"locale" => "pt_BR",
 	"imageSharer" => "images/sharer.jpg",
 	"root" => $root,
-	"domain" => '5asec.com.br',
+	"domain" => 'estrutura-php.com.br',
 	"cookie_expiration" => time() + 60 * 60 * 24,
     "gtmHead" => "",
     "gtmBody" => ""

@@ -1,49 +1,34 @@
-$(document).ready(function()
+$("#formLogin").validate(
 {
-    const systemPrefer = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-    const theme = localStorage.getItem('theme') || systemPrefer;
+    submitHandler: function (form)
+    {
+        boxLoad('open');
+        const formData = $(form).serializeObject();
 
-    $('.loading').fadeOut();
-    $('html').css('overflow-y', 'auto');
-    $('html').attr('data-theme', theme);
+        HTTP.post(cUrl('login/auth'), formData, '', (error, response) =>
+        {
+            boxLoad('close');
+            if (error)
+            {
+                console.error(error);
+                showNotify('danger', 'Houve um erro ao enviar os dados de login!');
+            }
+            else
+            {
+                if(response.redirect)
+                    window.location.href = response.redirect.url;
 
-    if(theme == 'dark') {
-        $('#switchTheme').prop('checked', true);
-        $('.iconTheme').addClass('fas fa-sun');
+                if(response.status)
+                    showNotify(response.status.type, response.status.message);
+
+                $(form)[0].reset();
+            }
+        });
+        return false;
     }
-    if(theme == 'light') {
-        $('#switchTheme').prop('checked', true);
-        $('.iconTheme').addClass('fas fa-moon');
-    }
-
-    $('#switchTheme').on('change', function () {
-        const selectedTheme = $(this).prop('checked') ? 'dark' : 'light';
-        $('html').attr('data-theme', selectedTheme);
-        localStorage.setItem('theme', selectedTheme);
-
-        if(selectedTheme == 'dark') {
-            $('.iconTheme').addClass('fa-sun');
-            $('.iconTheme').removeClass('fa-moon');
-        }
-        if(selectedTheme == 'light') {
-            $('.iconTheme').addClass('fa-moon');
-            $('.iconTheme').removeClass('fa-sun');
-        }
-    });
-
 });
 
-const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]');
-[...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl));
-
-const openMenu = () =>
-{
-    $('.header--links-mobile').addClass('show');
-    $('.overlay').addClass('show');
-};
-
-const closeMenu = () =>
-{
-    $('.header--links-mobile').removeClass('show');
-    $('.overlay').removeClass('show');
-};
+jQuery.extend(jQuery.validator.messages, {
+    required: "Este campo é requerido.",
+    email: "Por favor, forneça um e-mail válido.",
+});

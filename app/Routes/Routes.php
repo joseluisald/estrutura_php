@@ -9,7 +9,4 @@ $router->get("/", "Web:index", "web.index");
 $router->group("ops")->namespace("App\Controllers");
 $router->get("/{errcode}", "Error:error", "error.error");
 
-/* ADMIN */
-$router->group("admin")->namespace("App\Controllers");
-$router->get("/", "Admin:index", "admin.index");
 

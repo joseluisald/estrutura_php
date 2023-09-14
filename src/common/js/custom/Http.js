@@ -1,63 +1,92 @@
+'use strict';
+
+/**
+ * class HTTP
+ */
 class HTTP
 {
-    static get(url, callback) {
-        const xhr = new XMLHttpRequest();
-        xhr.open('GET', url, true);
-
-        xhr.onload = function () {
-            if (xhr.status >= 200 && xhr.status < 300) {
-                try {
-                    const responseObject = JSON.parse(xhr.responseText);
-                    callback(null, responseObject);
-                } catch (error) {
-                    callback(`Erro ao fazer o parse do JSON: ${error.message}`);
-                }
-            } else {
-                callback(`Erro: ${xhr.status} - ${xhr.statusText}`);
-            }
-        };
-
-        xhr.onerror = function () {
-            callback('Erro de conexão');
-        };
-
-        xhr.send();
-    }
-
-    static request(method, url, data, callback) {
+    /**
+     * request
+     * @param method
+     * @param url
+     * @param data
+     * @param token
+     * @param callback
+     */
+    static request(method, url, data, token = '', callback)
+    {
         const xhr = new XMLHttpRequest();
         xhr.open(method, url, true);
-        xhr.setRequestHeader('Content-Type', 'application/json');
+
+        if (token) {
+            xhr.setRequestHeader('Authorization', `Bearer ${token}`);
+        }
+
+        xhr.setRequestHeader('X-Requested-With', 'XMLHttpRequest');
 
         xhr.onload = function () {
             if (xhr.status >= 200 && xhr.status < 300) {
                 try {
-                    const responseObject = JSON.parse(xhr.responseText);
+                    const responseObject = JSON.parse(xhr.responseText || '{}');
                     callback(null, responseObject);
                 } catch (error) {
-                    callback(`Erro ao fazer o parse do JSON: ${error.message}`);
+                    callback(null, []);
                 }
             } else {
-                callback(`Erro: ${xhr.status} - ${xhr.statusText}`);
+                callback(`Erro: ${xhr.status} - ${xhr.statusText}`, null);
             }
         };
 
         xhr.onerror = function () {
-            callback('Erro de conexão');
+            callback('Erro de conexão', null);
         };
 
         xhr.send(JSON.stringify(data));
     }
 
-    static post(url, data, callback) {
-        HTTP.request('POST', url, data, callback);
+    /**
+     * get
+     * @param url
+     * @param token
+     * @param callback
+     */
+    static get(url, token = '', callback)
+    {
+        HTTP.request('GET', url, null, token, callback);
     }
 
-    static put(url, data, callback) {
-        HTTP.request('PUT', url, data, callback);
+    /**
+     * post
+     * @param url
+     * @param data
+     * @param token
+     * @param callback
+     */
+    static post(url, data, token = '', callback)
+    {
+        HTTP.request('POST', url, data, token, callback);
     }
 
-    static delete(url, data, callback) {
-        HTTP.request('DELETE', url, data, callback);
+    /**
+     * put
+     * @param url
+     * @param data
+     * @param token
+     * @param callback
+     */
+    static put(url, data, token = '', callback)
+    {
+        HTTP.request('PUT', url, data, token, callback);
+    }
+
+    /**
+     * delete
+     * @param url
+     * @param token
+     * @param callback
+     */
+    static delete(url, token = '', callback)
+    {
+        HTTP.request('DELETE', url, null, token, callback);
     }
 }
