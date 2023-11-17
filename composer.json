@@ -37,6 +37,9 @@
 		],
 		"make": [
 			"php .\\app\\Boot\\Make.php"
+		],
+		"migrate": [
+			"php .\\app\\Boot\\Migrate.php"
 		]
 	}
 }

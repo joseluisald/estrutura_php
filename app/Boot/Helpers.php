@@ -398,3 +398,22 @@ function showChapterQuiz($chapterProgress, $chapter)
 {
     return !empty($chapterProgress) && $chapterProgress->IsFinished && $chapter->HasQuiz;
 }
+
+function flash(string $type = null, string $message = null): ?string
+{
+    if ($type && $message) {
+        $_SESSION["flash"] = [
+            "type" => $type,
+            "message" => $message
+        ];
+
+        return null;
+    }
+
+    if (!empty($_SESSION["flash"]) && $flash = $_SESSION["flash"]) {
+        unset($_SESSION["flash"]);
+        return "<script>Swal.fire({icon: '{$flash["type"]}', title: '{$flash["message"]}',showConfirmButton: false, timer: 2500});</script>";
+    }
+
+    return null;
+}

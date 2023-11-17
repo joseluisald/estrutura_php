@@ -1,5 +1,8 @@
 <?php
 
+ini_set('display_errors', 1);
+error_reporting(E_ALL);
+
 /**
  *
  */
@@ -10,7 +13,7 @@ class ComposerCommands
      * @param $theme
      * @return void
      */
-    public function theme($themeName, $theme = 'web')
+    public function theme($themeName, $theme = 'web', $table = "")
     {
         //  GERAÇÃO DOS ARQUIVOS DE SRC
         $srcDirTemplate = __DIR__ . '/templates/src/';
@@ -87,41 +90,39 @@ class ComposerCommands
      * @param $theme
      * @return void
      */
-    public function resource($name, $theme = 'web')
+    public function resource($name, $theme = 'web', $table = "")
     {
         $name = ucfirst($name);
 
         $controllerTemplatePath = __DIR__ . '/templates/controller.template.php';
-        $serviceTemplatePath = __DIR__ . '/templates/service.template.php';
         $routeTemplatePath = __DIR__ . '/templates/route.template.php';
         $routesPath = __DIR__ . '/../Routes/Routes.php';
 
         $controllerContent = file_get_contents($controllerTemplatePath);
-        $serviceContent = file_get_contents($serviceTemplatePath);
         $routeTemplateContent = file_get_contents($routeTemplatePath);
 
-        if ($controllerContent === false || $serviceContent === false) {
+        if ($controllerContent === false) {
             echo "Error reading template files.\n";
             exit(1);
         }
 
         $nameLcfirst = lcfirst($name);
+        $themeUcfirst = ucfirst($theme);
 
         $controllerContent = str_replace('{{nameLc}}', $nameLcfirst, $controllerContent);
         $controllerContent = str_replace('{{theme}}', $theme, $controllerContent);
+        $controllerContent = str_replace('{{themeUcfirst}}', $themeUcfirst, $controllerContent);
         $controllerContent = str_replace('{{name}}', $name, $controllerContent);
-        $serviceContent = str_replace('{{name}}', $name, $serviceContent);
 
-        $controllerPath = __DIR__ . "/../Controllers/{$name}.php";
-        $servicePath = __DIR__ . "/../Services/{$name}Service.php";
+        $contollerThemeDir =  __DIR__ . "/../Controllers/{$themeUcfirst}";
+        if (!file_exists($contollerThemeDir)) {
+            mkdir($contollerThemeDir, 0755, true);
+        }
+
+        $controllerPath = $contollerThemeDir."/{$name}.php";
 
         if (file_put_contents($controllerPath, $controllerContent) === false) {
             echo "Error creating Controller file.\n";
-            exit(1);
-        }
-
-        if (file_put_contents($servicePath, $serviceContent) === false) {
-            echo "Error creating Service file.\n";
             exit(1);
         }
 
@@ -135,6 +136,7 @@ class ComposerCommands
 
         $routeTemplateContent = str_replace('{{nameUpper}}', $nameUpper, $routeTemplateContent);
         $routeTemplateContent = str_replace('{{name}}', $name, $routeTemplateContent);
+        $routeTemplateContent = str_replace('{{themeUcfirst}}', $themeUcfirst, $routeTemplateContent);
         $routeTemplateContent = str_replace('{{nameLower}}', $nameLower, $routeTemplateContent);
 
         if (file_put_contents($routesPath, $routeTemplateContent, FILE_APPEND) === false) {
@@ -142,7 +144,40 @@ class ComposerCommands
             exit(1);
         }
 
-        echo "Controller, Service, and route generated successfully!\n";
+        echo "Controller, and route generated successfully!\n";
+    }
+
+    public function model($name, $theme = 'web', $table = "")
+    {
+        $name = ucfirst($name);
+        $theme = ucfirst($theme);
+
+        $modelTemplatePath = __DIR__ . '/templates/model.template.php';
+
+        $modelContent = file_get_contents($modelTemplatePath);
+
+        if ($modelContent === false) {
+            echo "Error reading template files.\n";
+            exit(1);
+        }
+
+        $modelContent = str_replace('{{name}}', $name, $modelContent);
+        $modelContent = str_replace('{{theme}}', $theme, $modelContent);
+        $modelContent = str_replace('{{table}}', $table, $modelContent);
+
+        $modelThemeDir =  __DIR__ . "/../Models/{$theme}";
+        if (!file_exists($modelThemeDir)) {
+            mkdir($modelThemeDir, 0755, true);
+        }
+
+        $modelPath = $modelThemeDir."/{$name}Model.php";
+
+        if (file_put_contents($modelPath, $modelContent) === false) {
+            echo "Error creating Model file.\n";
+            exit(1);
+        }
+
+        echo "Model {$name} generated successfully!\n";
     }
 
     /**
@@ -159,9 +194,10 @@ class ComposerCommands
         $controler = @explode(':', $args[2]);
         $argument = $controler[0];
         $theme = isset($controler[1]) ? $controler[1] : 'web';
+        $table = @$args[3];
 
         if (method_exists($this, $command)) {
-            $this->$command($argument, $theme);
+            $this->$command($argument, $theme, $table);
         } else {
             echo "Comando não reconhecido.\n";
             exit(1);
